@@ -1,5 +1,6 @@
 import { AiOutlineSearch } from "react-icons/ai";
 import { HiOutlineUserCircle } from "react-icons/hi";
+import { Link } from "react-router";
 
 export default function Navbar() {
   return (
@@ -15,10 +16,10 @@ export default function Navbar() {
           <h1 className="text-[28px] text-[#C8522A] font-semibold">Recipely</h1>
           {/* Navigation */}
           <nav className="md:flex gap-8 text-[#58423B] hidden ">
-            <a href="/">Home</a>
-            <a href="/about">About</a>
-            <a href="/recipes">Recipes</a>
-            <a href="/collections">Collections</a>
+            <Link to="/">Home</Link>
+            <Link to="/about">About</Link>
+            <Link to="/recipes">Recipes</Link>
+            <Link to="/collections">Collections</Link>
           </nav>
           {/* Icons */}
           <div className="flex gap-6">

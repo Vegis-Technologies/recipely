@@ -4,10 +4,13 @@ import { RECIPE_CATEGORIES } from "../constants";
 import { cn } from "../lib/utils";
 import RecipeCard from "../components/shared/recipe-card";
 import type { Recipe } from "../types";
+import Footer from "../components/shared/footer";
+import RecipeCardSkeleton from "../components/shared/skeleton/recipe-card-skeleton";
 
 function Home() {
   const [selectedRecipeCategory, setSelectedRecipeCategory] = useState("");
   const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [isRecipeLoading, setIsRecipeLoading] = useState(true);
 
   const filteredRecipes = recipes.filter(
     (recipe) =>
@@ -17,15 +20,17 @@ function Home() {
 
   useEffect(() => {
     const getRecipes = () => {
+      setIsRecipeLoading(true);
       fetch("https://dummyjson.com/recipes?limit=100")
         .then((res) => res.json()) // convert from JSON to Javascript data type
-        .then((data) => setRecipes(data?.recipes));
+        .then((data) => {
+          setRecipes(data?.recipes);
+          setIsRecipeLoading(false);
+        });
     };
 
     getRecipes();
   }, []);
-
-  //   console.log("Receipes state:", recipes);
 
   return (
     <main>
@@ -67,25 +72,31 @@ function Home() {
               ))}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {filteredRecipes.map((recipe) => (
-                <RecipeCard
-                  key={recipe.id}
-                  src={recipe.image}
-                  type={recipe.cuisine}
-                  rating={recipe.rating}
-                  duration={
-                    recipe.cookTimeMinutes + recipe.prepTimeMinutes + " mins"
-                  }
-                  name={recipe.name}
-                  difficulty={recipe.difficulty}
-                />
-              ))}
+              {isRecipeLoading &&
+                Array.from({ length: 12 }).map(() => <RecipeCardSkeleton />)}
+
+              {!isRecipeLoading &&
+                filteredRecipes.map((recipe) => (
+                  <RecipeCard
+                    key={recipe.id}
+                    id={recipe.id}
+                    src={recipe.image}
+                    type={recipe.cuisine}
+                    rating={recipe.rating}
+                    duration={
+                      recipe.cookTimeMinutes + recipe.prepTimeMinutes + " mins"
+                    }
+                    name={recipe.name}
+                    difficulty={recipe.difficulty}
+                  />
+                ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Footer */}
+      <Footer />
     </main>
   );
 }
